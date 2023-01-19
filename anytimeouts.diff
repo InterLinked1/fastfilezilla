@@ -1,0 +1,42 @@
+Index: src/engine/engine_options.cpp
+===================================================================
+--- src/engine/engine_options.cpp	(revision 10845)
++++ src/engine/engine_options.cpp	(working copy)
+@@ -16,10 +16,10 @@
+ 		{ "Last resolved IP", L"", option_flags::normal, 100 },
+ 		{ "No external ip on local conn", true, option_flags::normal },
+ 		{ "Pasv reply fallback mode", 0, option_flags::normal, 0, 2 },
+-		{ "Timeout", 20, option_flags::normal, 0, 9999, [](int& v)
++		{ "Timeout", 5, option_flags::normal, 0, 9999, [](int& v)
+ 			{
+-				if (v && v < 10) {
+-					v = 10;
++				if (v && v < 0) {
++					v = 1;
+ 				}
+ 				return true;
+ 			}
+Index: src/interface/settings/optionspage_connection.cpp
+===================================================================
+--- src/interface/settings/optionspage_connection.cpp	(revision 10845)
++++ src/interface/settings/optionspage_connection.cpp	(working copy)
+@@ -43,7 +43,7 @@
+ 		impl_->timeout_ = new wxTextCtrlEx(box, nullID, wxString(), wxDefaultPosition, wxSize(lay.dlgUnits(22), -1));
+ 		impl_->timeout_->SetMaxLength(4);
+ 		row->Add(impl_->timeout_, lay.valign);
+-		row->Add(new wxStaticText(box, nullID, _("(10-9999, 0 to disable)")), lay.valign);
++		row->Add(new wxStaticText(box, nullID, _("(1-9999, 0 to disable)")), lay.valign);
+ 		inner->Add(new wxStaticText(box, nullID, _("If no data is sent or received during an operation for longer than the specified time, the connection will be closed and FileZilla will try to reconnect.")));
+ 	}
+ 	{
+@@ -105,8 +105,8 @@
+ bool COptionsPageConnection::Validate()
+ {
+ 	auto const timeout = fz::to_integral<int>(impl_->timeout_->GetValue().ToStdWstring(), -1);
+-	if (timeout != 0 && (timeout < 10 || timeout > 9999)) {
+-		return DisplayError(impl_->timeout_, _("Please enter a timeout between 10 and 9999 seconds or 0 to disable timeouts."));
++	if (timeout != 0 && (timeout < 0 || timeout > 9999)) {
++		return DisplayError(impl_->timeout_, _("Please enter a timeout between 1 and 9999 seconds or 0 to disable timeouts."));
+ 	}
+ 
+ 	auto const retries = fz::to_integral<int>(impl_->tries_->GetValue().ToStdWstring(), -1);
