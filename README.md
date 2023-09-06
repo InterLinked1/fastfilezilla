@@ -1,5 +1,5 @@
 # fastfilezilla
-FileZilla with modifications to increase responsiveness
+FileZilla with modifications to increase responsiveness, disable update nags
 
 ## FileZilla for Windows, with responsiveness improvements
 
@@ -7,10 +7,23 @@ This is **not** a fork of FileZilla. This is simply a repository with a simple p
 to improve the responsiveness of FileZilla, and a script that compiles it from
 source and generates an installer file.
 
+Because users of this program will want to use the custom-compiled version,
+not an upstream release, updates have also been disabled since users will
+need to manually install a newer cross-compiled version to upgrade, so the
+update nags are merely pointlessly annoying.
+
 The script here cross-compiles FileZilla for Windows on Debian-based Linux.
 
-For convenience, a binary download of running this script (3.62.2 upstream) is provided.
+For convenience, a binary download of running this script (3.65.0 upstream) is provided.
 The binary is not signed.
+
+## OS Support
+
+This binary should work on Windows 7 or newer. Upstream FileZilla claims not to support
+Windows 7, but official releases do run on Windows 7 still. However, cross-compiling may
+result in using API calls that do not support Windows 7, in particular the
+GetSystemTimePreciseAsFileTime call in kernel32.dll, which is Windows 8+ only.
+The cross-compile script should ensure that this API is not used, to maintain Windows 7 compatibility.
 
 ## Background
 
