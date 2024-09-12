@@ -3,9 +3,10 @@ FileZilla with modifications to increase responsiveness, disable update nags
 
 ## FileZilla for Windows, with responsiveness improvements
 
-This is **not** a fork of FileZilla. This is simply a repository with a simple patch
-to improve the responsiveness of FileZilla, and a script that compiles it from
-source and generates an installer file.
+This is **not** a fork of FileZilla. This is simply a repository with a couple
+patches to improve responsiveness and the user interface, with a script to
+compile upstream FileZilla from source with these patches included. An
+installer file is generated at the end.
 
 Because users of this program will want to use the custom-compiled version,
 not an upstream release, updates have also been disabled since users will
@@ -14,8 +15,14 @@ update nags are merely pointlessly annoying.
 
 The script here cross-compiles FileZilla for Windows on Debian-based Linux.
 
-For convenience, a binary download of running this script (3.65.0 upstream) is provided.
+For convenience, a binary download of running this script (3.67.1 upstream) is provided.
 The binary is not signed.
+
+## Patches Applied
+
+- `anytimeouts.diff` - Allow choosing values 1 through 9 for "Connection timeout".
+   Official FileZilla only allows choosing 10 or higher (or disabling completely).
+- `short_tab_names.diff` - Show just the site name in tabs, without the URI, to save space.
 
 ## OS Support
 

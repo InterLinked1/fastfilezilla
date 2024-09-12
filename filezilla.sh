@@ -6,6 +6,10 @@ START_OVER=1 # Completely start a fresh build from scratch
 INSTALL_PACKAGES=1 # Automatically install required packages. Only needed the first time.
 NEED_BOOST_REGEX=1 # needed for 3.65.0 and newer but not for 3.62.2
 
+# Which patches to apply:
+PATCH_ANY_TIMEOUTS=1
+PATCH_SHORT_TAB_NAMES=1
+
 # Last tested with FileZilla 3.67.1, Debian 12
 # Previously tested with FileZilla 3.65.0, Debian 12
 # Originally tested with FileZilla 3.62.2, Ubuntu 22
@@ -146,9 +150,15 @@ cd ~/src
 svn co https://svn.filezilla-project.org/svn/FileZilla3/trunk fz
 cd fz
 
-## Apply the patch itself.
-wget https://raw.githubusercontent.com/InterLinked1/fastfilezilla/master/anytimeouts.diff
-svn patch anytimeouts.diff
+## Apply any custom patches:
+if [ "$PATCH_ANY_TIMEOUTS" = "1" ]; then
+	wget https://raw.githubusercontent.com/InterLinked1/fastfilezilla/master/anytimeouts.diff
+	svn patch anytimeouts.diff
+fi
+if [ "$PATCH_SHORT_TAB_NAMES" = "1" ]; then
+	wget https://raw.githubusercontent.com/InterLinked1/fastfilezilla/master/short_tab_names.diff
+	svn patch short_tab_names.diff
+fi
 
 #autoupdate
 autoreconf -i

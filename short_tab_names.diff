@@ -1,0 +1,17 @@
+Index: src/interface/state.cpp
+===================================================================
+--- src/interface/state.cpp	(revision 11179)
++++ src/interface/state.cpp	(working copy)
+@@ -1471,9 +1471,10 @@
+ 		std::wstring const& name = m_site.GetName();
+ 		m_title.clear();
+ 		if (!name.empty()) {
+-			m_title = name + _T(" - ");
++			m_title = name;
++		} else {
++			m_title = m_site.Format(ServerFormat::with_user_and_optional_port);
+ 		}
+-		m_title += m_site.Format(ServerFormat::with_user_and_optional_port);
+ 	}
+ 	else {
+ 		m_title = _("Not connected");
