@@ -4,9 +4,10 @@
 
 START_OVER=1 # Completely start a fresh build from scratch
 INSTALL_PACKAGES=1 # Automatically install required packages. Only needed the first time.
-NEED_BOOST_REGEX=0 # needed for 3.65.0 and newer but not for 3.62.2
+NEED_BOOST_REGEX=1 # needed for 3.65.0 and newer but not for 3.62.2
 
-# Last tested with FileZilla 3.65.0, Debian 12
+# Last tested with FileZilla 3.67.1, Debian 12
+# Previously tested with FileZilla 3.65.0, Debian 12
 # Originally tested with FileZilla 3.62.2, Ubuntu 22
 
 # Based on (with modifications from):
@@ -25,7 +26,7 @@ dpkg --add-architecture i386
 
 if [ "$INSTALL_PACKAGES" = "1" ]; then
 	apt update
-	apt install -y automake autoconf libtool make gettext lzip
+	apt install -y automake autoconf libtool make gettext lzip bzip2
 	apt install -y mingw-w64 pkg-config wx-common wine wine64 wine32 wine-binfmt subversion git g++
 fi
 
@@ -103,7 +104,6 @@ cd ~/src
 wget https://github.com/elimuhubconsultant-co-ke/armbian_build/raw/master/sqlite-autoconf-3390300.tar.gz
 tar xvzf sqlite-autoconf-3390300.tar.gz
 cd sqlite-autoconf-3390300
-make clean
 ./configure --with-default-win32-winnt=0x0601 --host=$TARGET_HOST --prefix="$HOME/prefix" --enable-shared --disable-static --disable-dynamic-extensions
 make
 make install
@@ -117,14 +117,17 @@ wine nsis-3.04-setup.exe /S
 
 # wxWidgets
 cd ~/src
-git clone --branch WX_3_0_BRANCH --single-branch https://github.com/wxWidgets/wxWidgets.git wx3
+git clone --recurse-submodules --branch 3.2 --single-branch https://github.com/wxWidgets/wxWidgets.git wx3
 cd wx3
-#wget https://filezilla-project.org/nightlies/2023-01-17/patches/wx3/cross_compiling.patch
-#git apply cross_compiling.patch
-./configure --with-default-win32-winnt=0x0601 --host=$TARGET_HOST --prefix="$HOME/prefix" --enable-shared --disable-static --enable-gui --enable-printfposparam
+wget https://filezilla-project.org/nightlies/latest/patches/wx3/cross_compiling.patch
+git apply cross_compiling.patch
+./configure --host=$TARGET_HOST --prefix="$HOME/prefix" --enable-shared --enable-unicode --enable-gui --enable-printfposparam
 make
 make install
-cp $HOME/prefix/lib/wx*.dll $HOME/prefix/bin
+# Seems like the cross_compiling patch above doesn't really fix this issue
+# see: https://forum.filezilla-project.org/viewtopic.php?p=192640#p192577
+find . -type f -name '*-x86_64-w64-mingw32.dll.a' | sed -e 'p;s/-x86_64-w64-mingw32.dll.a/.dll.a/' | xargs -n2 mv
+cp $HOME/prefix/lib/wx*.dll $HOME/prefix/bin || true
 
 # libfilezilla
 export CXXFLAGS=-std=c++17
