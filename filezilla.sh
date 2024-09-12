@@ -123,7 +123,7 @@ wine nsis-3.04-setup.exe /S
 cd ~/src
 git clone --recurse-submodules --branch 3.2 --single-branch https://github.com/wxWidgets/wxWidgets.git wx3
 cd wx3
-wget https://filezilla-project.org/nightlies/latest/patches/wx3/cross_compiling.patch
+wget https://filezilla-project.org/nightlies/latest/patches/wx3.2/cross_compiling.patch
 git apply cross_compiling.patch
 ./configure --host=$TARGET_HOST --prefix="$HOME/prefix" --enable-shared --enable-unicode --enable-gui --enable-printfposparam
 make
